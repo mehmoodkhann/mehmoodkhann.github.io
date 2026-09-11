@@ -1,3 +1,4 @@
+import { openDB } from "idb";
 import {
   defaultProfile,
   defaultExpertise,
@@ -13,6 +14,20 @@ import {
 import { legacyFingerprints } from "../data/legacyFingerprints.js";
 import { v2Fingerprints } from "../data/v2Fingerprints.js";
 const NAMESPACE = "mk_portfolio_v1";
+const DATABASE_NAME = "mk_portfolio_storage";
+const DATABASE_VERSION = 1;
+const STORE_NAME = "collections";
+const indexedDbAvailable =
+  typeof window !== "undefined" && typeof window.indexedDB !== "undefined";
+const database = indexedDbAvailable
+  ? openDB(DATABASE_NAME, DATABASE_VERSION, {
+      upgrade(db) {
+        if (!db.objectStoreNames.contains(STORE_NAME))
+          db.createObjectStore(STORE_NAME);
+      },
+    })
+  : null;
+const cache = new Map();
 const SEEDS = {
   profile: defaultProfile,
   expertise: defaultExpertise,
@@ -59,6 +74,72 @@ function writeRaw(collection, value) {
       "Changes could not be saved. Browser storage may be full or unavailable. Reduce upload sizes or enable site storage, then try again.",
     );
   }
+}
+function removeLegacy(collection) {
+  try {
+    window.localStorage.removeItem(key(collection));
+    window.localStorage.removeItem(key("redesign-v2:" + collection));
+    window.localStorage.removeItem(key("redesign-v3:" + collection));
+  } catch {}
+}
+async function loadCollection(collection) {
+  if (database && cache.has(collection)) return clone(cache.get(collection));
+  if (database) {
+    try {
+      const db = await database;
+      let value = await db.get(STORE_NAME, collection);
+      if (value === undefined) {
+        value = readRaw(collection);
+        if (value !== undefined) {
+          const expectedList = Array.isArray(SEEDS[collection]);
+          if (
+            value === null ||
+            Array.isArray(value) !== expectedList ||
+            (!expectedList && typeof value !== "object")
+          )
+            throw new Error("Saved content has an invalid format.");
+          value = migrateV3(collection, migrate(collection, value));
+          await db.put(STORE_NAME, value, collection);
+          removeLegacy(collection);
+        }
+      }
+      if (value === undefined) value = clone(SEEDS[collection]);
+      cache.set(collection, value);
+      return clone(value);
+    } catch (error) {
+      if (error.message?.includes("Saved content")) throw error;
+      throw new Error(
+        "Saved content could not be read. Enable site storage, then try again.",
+      );
+    }
+  }
+  const value = getCollection(collection);
+  return clone(value);
+}
+function persistCollection(collection, value) {
+  const next = clone(value);
+  if (!database) {
+    writeRaw(collection, next);
+    window.dispatchEvent(
+      new CustomEvent("portfolio:content", { detail: { collection } }),
+    );
+    return next;
+  }
+  return database
+    .then((db) => db.put(STORE_NAME, next, collection))
+    .then(() => {
+      cache.set(collection, next);
+      removeLegacy(collection);
+      window.dispatchEvent(
+        new CustomEvent("portfolio:content", { detail: { collection } }),
+      );
+      return next;
+    })
+    .catch(() => {
+      throw new Error(
+        "Changes could not be saved. Browser storage may be full or unavailable. Free browser storage or enable site storage, then try again.",
+      );
+    });
 }
 function migrate(collection, value) {
   let migrated;
@@ -133,6 +214,7 @@ function migrateV3(collection, value) {
 export function getCollection(collection) {
   if (!(collection in SEEDS)) throw new Error("Unknown content collection");
   if (typeof window === "undefined") return clone(SEEDS[collection]);
+  if (database && cache.has(collection)) return clone(cache.get(collection));
   const value = readRaw(collection);
   if (value === undefined) return clone(SEEDS[collection]);
   const expectedList = Array.isArray(SEEDS[collection]);
@@ -142,32 +224,31 @@ export function getCollection(collection) {
     (!expectedList && typeof value !== "object")
   )
     throw new Error("Saved content has an invalid format.");
-  return clone(migrateV3(collection, migrate(collection, value)));
+  const next = clone(migrateV3(collection, migrate(collection, value)));
+  if (database) cache.set(collection, next);
+  return next;
 }
 export function setCollection(collection, value) {
-  writeRaw(collection, value);
-  window.dispatchEvent(
-    new CustomEvent("portfolio:content", { detail: { collection } }),
-  );
-  return value;
+  return persistCollection(collection, value);
 }
 export function resetCollection(collection) {
   return setCollection(collection, clone(SEEDS[collection]));
 }
 export function resetAll() {
-  Object.keys(SEEDS).forEach(resetCollection);
+  const resets = Object.keys(SEEDS).map(resetCollection);
+  return database ? Promise.all(resets) : resets;
 }
 export function exportContent() {
+  const collections = Object.keys(SEEDS);
+  if (database)
+    return Promise.all(collections.map(loadCollection)).then((values) =>
+      Object.fromEntries(collections.map((collection, index) => [collection, values[index]])),
+    );
   const content = Object.fromEntries(
-    Object.keys(SEEDS).map((collection) => [
-      collection,
-      getCollection(collection),
-    ]),
+    collections.map((collection) => [collection, getCollection(collection)]),
   );
-  if (typeof window !== "undefined") {
-    const archived = readRaw("blog");
-    if (archived !== undefined) content.archivedBlog = archived;
-  }
+  const archived = readRaw("blog");
+  if (archived !== undefined) content.archivedBlog = archived;
   return content;
 }
 function makeId(prefix) {
@@ -176,17 +257,20 @@ function makeId(prefix) {
 export function createListService(collection, idPrefix) {
   return {
     getSnapshot: () => getCollection(collection),
-    list: async () => getCollection(collection),
+    list: async () => loadCollection(collection),
     getById: async (id) =>
-      getCollection(collection).find((item) => item.id === id) || null,
+      (await loadCollection(collection)).find((item) => item.id === id) || null,
     create: async (item) => {
       const newItem = { ...item, id: makeId(idPrefix) };
-      setCollection(collection, [...getCollection(collection), newItem]);
+      await setCollection(collection, [
+        ...(await loadCollection(collection)),
+        newItem,
+      ]);
       return newItem;
     },
     update: async (id, patch) => {
       let found = null;
-      const updated = getCollection(collection).map((item) => {
+      const updated = (await loadCollection(collection)).map((item) => {
         if (item.id === id) {
           found = { ...item, ...patch, id };
           return found;
@@ -195,13 +279,13 @@ export function createListService(collection, idPrefix) {
       });
       if (!found)
         throw new Error("This item no longer exists. Reload and try again.");
-      setCollection(collection, updated);
+      await setCollection(collection, updated);
       return found;
     },
     remove: async (id) => {
-      setCollection(
+      await setCollection(
         collection,
-        getCollection(collection).filter((item) => item.id !== id),
+        (await loadCollection(collection)).filter((item) => item.id !== id),
       );
       return true;
     },
@@ -210,9 +294,9 @@ export function createListService(collection, idPrefix) {
 export function createObjectService(collection) {
   return {
     getSnapshot: () => getCollection(collection),
-    get: async () => getCollection(collection),
+    get: async () => loadCollection(collection),
     update: async (patch) => {
-      const updated = { ...getCollection(collection), ...patch };
+      const updated = { ...(await loadCollection(collection)), ...patch };
       setCollection(collection, updated);
       return updated;
     },

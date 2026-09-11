@@ -31,7 +31,7 @@ export default function Settings() {
       setSaving(false);
     }
   };
-  const reset = () => {
+  const reset = async () => {
     if (
       !window.confirm(
         "Reset all local content to the defaults? Export a backup first if you want to keep your edits.",
@@ -39,16 +39,16 @@ export default function Settings() {
     )
       return;
     try {
-      resetAll();
+      await resetAll();
       window.location.reload();
     } catch (err) {
       setError(err.message);
     }
   };
-  const backup = () => {
+  const backup = async () => {
     try {
       const url = URL.createObjectURL(
-        new Blob([JSON.stringify(exportContent(), null, 2)], {
+        new Blob([JSON.stringify(await exportContent(), null, 2)], {
           type: "application/json",
         }),
       );

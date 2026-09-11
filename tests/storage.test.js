@@ -1,5 +1,6 @@
-import test, { beforeEach } from "node:test";
+import test, { beforeEach, mock } from "node:test";
 import assert from "node:assert/strict";
+import emailjs from "@emailjs/browser";
 import {
   createListService,
   getCollection,
@@ -13,10 +14,7 @@ import { authService } from "../src/services/authService.js";
 import { defaultProfile } from "../src/data/defaultData.js";
 import { webUrl, emailAddress } from "../src/utils/links.js";
 import { validateContact } from "../src/utils/contact.js";
-import {
-  sendContactEmail,
-  isEmailConfigured,
-} from "../src/services/emailService.js";
+import { sendContactEmail } from "../src/services/emailService.js";
 let memory, events, failWrites;
 beforeEach(() => {
   memory = new Map();
@@ -179,16 +177,30 @@ test("Contact validation handles whitespace, invalid email, and long messages", 
     }).errors.message,
   );
 });
-test("Unconfigured email returns unsent and performs no delivery", async () => {
-  assert.equal(isEmailConfigured, false);
-  assert.deepEqual(
-    await sendContactEmail({
-      name: "Test",
-      email: "test@portfolio.test",
-      message: "No transmission",
-    }),
-    { sent: false, reason: "not_configured" },
+test("Contact delivery submits the form through EmailJS and surfaces failures", async () => {
+  const form = { id: "contact-form-test" };
+  const calls = [];
+  let sendFormImplementation = async (...args) => {
+    calls.push(args);
+    assert.equal(args[0], "service_67lu9mc");
+    assert.equal(args[1], "template_k2nupf8");
+    assert.equal(args[2], form);
+    return { status: 200, text: "OK" };
+  };
+  mock.method(
+    emailjs,
+    "sendForm",
+    () => sendFormImplementation,
+    { getter: true },
   );
+
+  await assert.doesNotReject(sendContactEmail(form));
+  assert.equal(calls.length, 1);
+
+  sendFormImplementation = async () => {
+    throw new Error("EmailJS test failure");
+  };
+  await assert.rejects(sendContactEmail(form), /EmailJS test failure/);
 });
 test("Unsafe and placeholder outbound links are hidden", () => {
   for (const value of [

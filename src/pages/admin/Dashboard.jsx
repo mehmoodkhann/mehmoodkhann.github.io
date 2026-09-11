@@ -81,9 +81,8 @@ export default function Dashboard() {
       <div className="mt-10 rounded-xl card-border p-6">
         <h2 className="font-display text-lg text-ink">About this data layer</h2>
         <p className="text-sm text-muted mt-2 leading-relaxed max-w-xl">
-          All content is currently stored in your browser's localStorage — it's
-          a temporary, frontend-only store meant to make this admin panel usable
-          before a real backend exists. It persists across reloads on this
+          Content is stored locally in this browser using IndexedDB, with small
+          preferences kept in localStorage. It persists across reloads on this
           device and browser, but won't sync to other devices. See the README
           for how to connect a FastAPI backend later.
         </p>
