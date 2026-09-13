@@ -4,7 +4,7 @@ import Container from "../components/common/Container";
 import CertificationCard from "../components/certifications/CertificationCard";
 import LoadingState from "../components/common/LoadingState";
 import ErrorState from "../components/common/ErrorState";
-import { certificationsService } from "../services/certificationsService";
+import { certificationsService } from "../services/contentService";
 import { useCollection } from "../hooks/useCollection";
 import { setPageMeta } from "../utils/seo";
 

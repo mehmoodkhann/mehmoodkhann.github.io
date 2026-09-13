@@ -11,7 +11,7 @@ import {
 import Container from "../common/Container";
 import SectionHeading from "../common/SectionHeading";
 import { useCollection } from "../../hooks/useCollection";
-import { expertiseService } from "../../services/expertiseService";
+import { expertiseService } from "../../services/contentService";
 import LoadingState from "../common/LoadingState";
 import ErrorState from "../common/ErrorState";
 const icons = [FiLayers, FiServer, FiDatabase, FiLayout, FiCode, FiGitBranch];

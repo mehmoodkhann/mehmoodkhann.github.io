@@ -3,7 +3,7 @@ import { FiArrowUpRight } from "react-icons/fi";
 import Container from "../common/Container";
 import SectionHeading from "../common/SectionHeading";
 import { useCollection } from "../../hooks/useCollection";
-import { servicesService } from "../../services/servicesService";
+import { servicesService } from "../../services/contentService";
 export default function ServicesPreview() {
   const { data, error } = useCollection(servicesService);
   if (error || !data.length) return null;

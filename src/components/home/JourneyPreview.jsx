@@ -2,8 +2,10 @@ import { Link } from "react-router-dom";
 import { FiArrowUpRight } from "react-icons/fi";
 import Container from "../common/Container";
 import { useObject, useCollection } from "../../hooks/useCollection";
-import { profileService } from "../../services/profileService";
-import { journeyService } from "../../services/journeyService";
+import {
+  profileService,
+  journeyService,
+} from "../../services/contentService";
 export default function JourneyPreview() {
   const { data: profile } = useObject(profileService);
   const { data: journey } = useCollection(journeyService);

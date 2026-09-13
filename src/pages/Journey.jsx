@@ -3,8 +3,7 @@ import Container from "../components/common/Container";
 import LoadingState from "../components/common/LoadingState";
 import ErrorState from "../components/common/ErrorState";
 import { useCollection } from "../hooks/useCollection";
-import { journeyService } from "../services/journeyService";
-import { educationService } from "../services/educationService";
+import { journeyService, educationService } from "../services/contentService";
 import { setPageMeta } from "../utils/seo";
 export default function Journey() {
   const { data, loading, error } = useCollection(journeyService);

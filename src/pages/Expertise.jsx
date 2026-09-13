@@ -5,7 +5,7 @@ import Container from "../components/common/Container";
 import LoadingState from "../components/common/LoadingState";
 import ErrorState from "../components/common/ErrorState";
 import { useCollection } from "../hooks/useCollection";
-import { skillsService } from "../services/skillsService";
+import { skillsService } from "../services/contentService";
 import { setPageMeta } from "../utils/seo";
 export default function Expertise() {
   const { data: skills, loading, error } = useCollection(skillsService);

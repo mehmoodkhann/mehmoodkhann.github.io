@@ -4,7 +4,7 @@ import { FiSun, FiMoon, FiMenu, FiX, FiArrowUpRight } from "react-icons/fi";
 import Container from "../common/Container";
 import { useTheme } from "../../contexts/ThemeContext";
 import { useObject } from "../../hooks/useCollection";
-import { profileService } from "../../services/profileService";
+import { profileService } from "../../services/contentService";
 const links = [
   ["/projects", "Work"],
   ["/about", "About"],

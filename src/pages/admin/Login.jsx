@@ -15,7 +15,7 @@ export default function Login() {
   useEffect(() => {
     setPageMeta({
       title: "Local admin login | Mehmood Khan",
-      description: "Local portfolio editor. This is demo authentication.",
+      description: "Local portfolio draft editor.",
       noindex: true,
     });
   }, []);
@@ -64,7 +64,7 @@ export default function Login() {
       >
         <h1 className="font-display text-xl text-ink">Admin Login</h1>
         <p className="text-sm text-muted mt-1">
-          Manage the portfolio's content.
+          Prepare portfolio content drafts.
         </p>
 
         <div className="mt-6">
@@ -98,8 +98,8 @@ export default function Login() {
         </button>
 
         <p className="mt-6 text-xs text-muted font-mono leading-relaxed">
-          Demo/local auth only — this is not secure production authentication.
-          See services/authService.js.
+          This editor prepares local drafts. It cannot publish changes to the
+          repository or change what other visitors see.
         </p>
       </motion.form>
     </div>

@@ -53,9 +53,9 @@ export default function Dashboard() {
     <div>
       <h1 className="font-display text-2xl text-ink">Dashboard</h1>
       <p className="text-sm text-muted mt-1">
-        Overview of your portfolio content. Changes apply to this browser only.
-        Publishing shared content requires updating the source or connecting a
-        backend.
+        Overview of your local draft content. The public portfolio reads the
+        committed repository data and changes publish only after those files
+        are updated and deployed.
       </p>
 
       {error && (
@@ -79,12 +79,12 @@ export default function Dashboard() {
       </div>
 
       <div className="mt-10 rounded-xl card-border p-6">
-        <h2 className="font-display text-lg text-ink">About this data layer</h2>
+        <h2 className="font-display text-lg text-ink">Draft workflow</h2>
         <p className="text-sm text-muted mt-2 leading-relaxed max-w-xl">
-          Content is stored locally in this browser using IndexedDB, with small
-          preferences kept in localStorage. It persists across reloads on this
-          device and browser, but won't sync to other devices. See the README
-          for how to connect a FastAPI backend later.
+          Admin edits are local drafts for review and export. They do not change
+          what visitors see. Update the committed data in
+          <span className="font-mono text-ink"> src/data/defaultData.js</span>
+          and committed assets, then push to GitHub Pages to publish globally.
         </p>
       </div>
     </div>

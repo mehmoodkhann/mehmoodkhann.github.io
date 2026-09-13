@@ -6,7 +6,7 @@ import Button from "../components/common/Button";
 import { resumeUrl } from "../utils/links";
 import ContactForm from "../components/contact/ContactForm";
 import { useObject } from "../hooks/useCollection";
-import { profileService } from "../services/profileService";
+import { profileService } from "../services/contentService";
 import { setPageMeta } from "../utils/seo";
 export default function Contact() {
   const { data: profile } = useObject(profileService);

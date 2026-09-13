@@ -7,7 +7,7 @@ import ErrorState from "../common/ErrorState";
 import EmptyState from "../common/EmptyState";
 import { ProjectFeature, ProjectRow } from "../projects/ProjectCard";
 import { useCollection } from "../../hooks/useCollection";
-import { projectsService } from "../../services/projectsService";
+import { projectsService } from "../../services/contentService";
 export default function FeaturedProjects() {
   const { data, loading, error } = useCollection(projectsService);
   const featured = data.filter((p) => p.featured);

@@ -2,7 +2,7 @@ import { Link } from "react-router-dom";
 import { FiArrowUpRight, FiAward } from "react-icons/fi";
 import Container from "../common/Container";
 import { useCollection } from "../../hooks/useCollection";
-import { certificationsService } from "../../services/certificationsService";
+import { certificationsService } from "../../services/contentService";
 
 export default function CertificationsPreview() {
   const { data, error } = useCollection(certificationsService);

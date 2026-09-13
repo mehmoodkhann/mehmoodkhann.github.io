@@ -2,9 +2,8 @@
 // IMAGE UPLOAD HELPER (temporary browser-storage implementation)
 // ---------------------------------------------------------------------------
 // Since this project has no backend/file storage yet, uploaded images are
-// converted to compressed base64 data URLs and saved inline with the local
-// content records. The records are stored in IndexedDB, which is appropriate
-// for this larger structured data while the images remain browser-local.
+// converted to compressed base64 data URLs for local draft export. They are
+// never used by the public static content service.
 //
 // When a real backend exists, replace calls to this with an actual file
 // upload request and store the returned URL instead.

@@ -7,7 +7,7 @@ import LoadingState from "../components/common/LoadingState";
 import EmptyState from "../components/common/EmptyState";
 import ErrorState from "../components/common/ErrorState";
 import { useCollection } from "../hooks/useCollection";
-import { servicesService } from "../services/servicesService";
+import { servicesService } from "../services/contentService";
 import { setPageMeta } from "../utils/seo";
 export default function Services() {
   const { data, loading, error } = useCollection(servicesService);

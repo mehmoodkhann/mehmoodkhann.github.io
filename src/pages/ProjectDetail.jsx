@@ -18,7 +18,7 @@ import ProjectCover from "../components/projects/ProjectCover";
 import ArchitectureExplorer from "../components/projects/ArchitectureExplorer";
 import CaseNavigation from "../components/projects/CaseNavigation";
 import { useCollection } from "../hooks/useCollection";
-import { projectsService } from "../services/projectsService";
+import { projectsService } from "../services/contentService";
 import { setPageMeta } from "../utils/seo";
 import { webUrl, imageUrl } from "../utils/links";
 function Section({ id, title, children }) {

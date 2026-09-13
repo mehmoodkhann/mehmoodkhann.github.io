@@ -7,9 +7,11 @@ import ContactCta from "../components/home/ContactCta";
 import ServicesPreview from "../components/home/ServicesPreview";
 import CertificationsPreview from "../components/home/CertificationsPreview";
 import { useObject, useCollection } from "../hooks/useCollection";
-import { projectsService } from "../services/projectsService";
-import { profileService } from "../services/profileService";
-import { settingsService } from "../services/settingsService";
+import {
+  projectsService,
+  profileService,
+  settingsService,
+} from "../services/contentService";
 import { setPageMeta } from "../utils/seo";
 export default function Home() {
   const { data: profile } = useObject(profileService);

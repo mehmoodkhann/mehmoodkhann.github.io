@@ -1,7 +1,7 @@
 import { Link } from "react-router-dom";
 import { FiArrowUp } from "react-icons/fi";
 import { useObject } from "../../hooks/useCollection";
-import { profileService } from "../../services/profileService";
+import { profileService } from "../../services/contentService";
 import Container from "../common/Container";
 import SocialLinks from "../common/SocialLinks";
 export default function Footer() {

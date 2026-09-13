@@ -6,7 +6,7 @@ import ErrorState from "../components/common/ErrorState";
 import { ProjectFeature, ProjectRow } from "../components/projects/ProjectCard";
 import ContactCta from "../components/home/ContactCta";
 import { useCollection } from "../hooks/useCollection";
-import { projectsService } from "../services/projectsService";
+import { projectsService } from "../services/contentService";
 import { setPageMeta } from "../utils/seo";
 export default function Projects() {
   const { data: projects, loading, error } = useCollection(projectsService);
