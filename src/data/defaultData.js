@@ -129,12 +129,12 @@ export const defaultProfile = {
   tagline:
     "I build document assistants and AI applications, connecting retrieval, language models, and useful interfaces.",
   status: "BS Computer Science student",
-  location: "Pakistan",
-  email: "",
-  github: "",
-  linkedin: "",
-  resumeUrl: "",
-  photoUrl: "",
+  location: "Nawabshah, Sindh, Pakistan",
+  email: "mehmoodkhan@quest.edu.pk",
+  github: "https://github.com/mehmoodkhann",
+  linkedin: "https://www.linkedin.com/in/mehmood-khan-5799352a6/",
+  resumeUrl: "/assets/resume/resume.pdf",
+  photoUrl: "/assets/profile/profile.jpg",
   aboutShort:
     "I am a BS Computer Science student at QUEST, Nawabshah, graduating in 2027. I build AI applications around NLP, retrieval-augmented generation, and language models, from document processing to the interface people use.",
   aboutLong: [
@@ -153,8 +153,12 @@ export const defaultProjects = [
     role: "AI/NLP & RAG Developer",
     summary:
       "Ask focused questions about research papers, with answers generated from retrieved document context.",
-    coverImage: "/images/research-paper-assistant.svg",
-    screenshots: [],
+    coverImage: "/assets/projects/research-paper-assistant/cover.png",
+    screenshots: [
+      "/assets/projects/research-paper-assistant/screenshots/screenshot-1.png",
+      "/assets/projects/research-paper-assistant/screenshots/screenshot-2.png",
+      "/assets/projects/research-paper-assistant/screenshots/screenshot-3.png",
+    ],
     architectureDiagram: "",
     githubUrl: "",
     liveUrl: "",
@@ -310,7 +314,7 @@ export const defaultProjects = [
     role: "AI/NLP & RAG Developer",
     summary:
       "A practical AI/RAG project for exploring document knowledge through natural-language questions.",
-    coverImage: "/images/knowledge-assistant.svg",
+    coverImage: "/assets/projects/knowledge-assistant/cover.png",
     screenshots: [],
     architectureDiagram: "",
     githubUrl: "",
@@ -363,7 +367,7 @@ export const defaultProjects = [
     role: "Developer",
     summary:
       "A Python desktop tool that brings network activity, connection checks, and report exports into one interface.",
-    coverImage: "/images/network-traffic-monitor.svg",
+    coverImage: "/assets/projects/network-traffic-monitor/cover.png",
     screenshots: [],
     architectureDiagram: "",
     githubUrl: "",
@@ -687,4 +691,15 @@ export const skillLevelOrder = [
   "Exploring",
 ];
 
-export const defaultCertifications = [];
+export const defaultCertifications = [
+  {
+    id: "cert_mtu7qjzg_qai43",
+    name: "CSET 2025",
+    issuer: "Computer Science Department Quest Nawabshah",
+    issueDate: "2025-04-23",
+    credentialId: "",
+    credentialUrl: "",
+    image: "/assets/certifications/cset-2025.jpg",
+    skills: [],
+  },
+];

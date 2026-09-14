@@ -79,27 +79,25 @@ test("Contact controls are explicitly labelled; no local-save delivery promise r
   assert.ok(!html.includes("Message received."));
 });
 
-test("Certifications has a truthful empty state and no seeded credentials", async () => {
+test("Certifications renders the imported credential", async () => {
   const html = await readFile(
     new URL("certifications/index.html", root),
     "utf8",
   );
-  assert.ok(html.includes("Certifications coming soon."));
-  assert.ok(!html.includes('class="certification-card"'));
+  assert.ok(html.includes("CSET 2025"));
+  assert.ok(html.includes("cset-2025.jpg"));
   assert.ok(!pages.some((p) => p.path.startsWith("/blog")));
 });
-test("All three major projects have desktop and mobile technical covers", async () => {
+test("All three major projects have committed technical covers", async () => {
   const html = await readFile(new URL("projects/index.html", root), "utf8");
   for (const id of [
     "research-paper-assistant",
     "knowledge-assistant",
     "network-traffic-monitor",
   ]) {
-    for (const file of [id + ".svg", id + "-mobile.svg"]) {
-      const svg = await readFile(new URL("images/" + file, root), "utf8");
-      assert.ok(svg.includes("not a product screenshot"));
-      assert.ok(html.includes("/images/" + file));
-    }
+    const file = `assets/projects/${id}/cover.png`;
+    await readFile(new URL(file, root));
+    assert.ok(html.includes(`/${file}`));
   }
 });
 test("Identity, student status and case-study navigation remain visible", async () => {

@@ -87,9 +87,9 @@ test("Known placeholder fields migrate without overwriting personal edits", () =
     }),
   );
   const p = getCollection("profile");
-  assert.equal(p.email, "");
-  assert.equal(p.github, "");
-  assert.equal(p.linkedin, "");
+  assert.equal(p.email, "mehmoodkhan@quest.edu.pk");
+  assert.equal(p.github, "https://github.com/mehmoodkhann");
+  assert.equal(p.linkedin, "https://www.linkedin.com/in/mehmood-khan-5799352a6/");
   assert.equal(p.name, "Owner custom name");
   assert.equal(p.role, "Custom role");
 });
@@ -270,9 +270,9 @@ test("V3 migration updates old defaults and preserves custom fields and removed 
     "Migration is stable across reloads",
   );
 });
-test("Certifications start empty and retain every credential field through CRUD", async () => {
+test("Imported certifications retain every credential field through CRUD", async () => {
   const service = createListService("certifications", "cert");
-  assert.deepEqual(await service.list(), []);
+  assert.equal((await service.list()).length, 1);
   const fields = {
     name: "Test credential",
     issuer: "Test issuer",
@@ -288,7 +288,9 @@ test("Certifications start empty and retain every credential field through CRUD"
     id: saved.id,
   });
   await service.update(saved.id, { skills: ["Python", "FastAPI"] });
-  assert.equal(exportContent().certifications[0].credentialId, "TEST-ONLY");
+  assert.ok(
+    exportContent().certifications.some((item) => item.credentialId === "TEST-ONLY"),
+  );
   await service.remove(saved.id);
-  assert.deepEqual(await service.list(), []);
+  assert.equal((await service.list()).length, 1);
 });
